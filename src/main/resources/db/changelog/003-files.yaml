@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-files
+      author: labhau
+      changes:
+        - createTable:
+            tableName: files
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: original_name
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stored_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: content_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: storage_path
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_by
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: files
+            baseColumnNames: uploaded_by
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_files_uploaded_by
+  - changeSet:
+      id: 009-files-add-application-id
+      author: labhau
+      changes:
+        - addColumn:
+            tableName: files
+            columns:
+              - column:
+                  name: application_id
+                  type: uuid
+        - addForeignKeyConstraint:
+            baseTableName: files
+            baseColumnNames: application_id
+            referencedTableName: applications
+            referencedColumnNames: id
+            constraintName: fk_files_application

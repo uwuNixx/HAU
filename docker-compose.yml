@@ -1,0 +1,47 @@
+services:
+  labhau-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRED: ${JWT_EXPIRED}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - labhau-network
+
+  db:
+    image: postgres:17
+    container_name: labhau-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - labhau_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - labhau-network
+
+volumes:
+  labhau_data:
+
+networks:
+  labhau-network:
+    driver: bridge

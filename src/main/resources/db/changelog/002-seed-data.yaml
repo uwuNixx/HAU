@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-roles
+      author: labhau
+      changes:
+        - sqlFile:
+            path: db/data/seed_roles.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: seed-data
+      author: labhau
+      changes:
+        - sqlFile:
+            path: db/data/seed_data.sql
+            relativeToChangelogFile: false

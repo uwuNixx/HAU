@@ -1,0 +1,275 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-roles
+      author: labhau
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
+      id: 002-users
+      author: labhau
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(20)
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 003-user-roles
+      author: labhau
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_roles
+            columnNames: user_id, role_id
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_user_roles_user
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            constraintName: fk_user_roles_role
+
+  - changeSet:
+      id: 004-buildings
+      author: labhau
+      changes:
+        - createTable:
+            tableName: buildings
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: city
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: house_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: management_company
+                  type: varchar(200)
+
+  - changeSet:
+      id: 005-apartments
+      author: labhau
+      changes:
+        - createTable:
+            tableName: apartments
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: floor
+                  type: int
+              - column:
+                  name: building_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resident_id
+                  type: uuid
+        - addForeignKeyConstraint:
+            baseTableName: apartments
+            baseColumnNames: building_id
+            referencedTableName: buildings
+            referencedColumnNames: id
+            constraintName: fk_apartment_building
+        - addForeignKeyConstraint:
+            baseTableName: apartments
+            baseColumnNames: resident_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_apartment_resident
+
+  - changeSet:
+      id: 006-service-categories
+      author: labhau
+      changes:
+        - createTable:
+            tableName: service_categories
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: varchar(500)
+
+  - changeSet:
+      id: 007-applications
+      author: labhau
+      changes:
+        - createTable:
+            tableName: applications
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: title
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: status
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: priority
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: completed_at
+                  type: timestamp
+              - column:
+                  name: apartment_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: assignee_id
+                  type: uuid
+        - addForeignKeyConstraint:
+            baseTableName: applications
+            baseColumnNames: apartment_id
+            referencedTableName: apartments
+            referencedColumnNames: id
+            constraintName: fk_application_apartment
+        - addForeignKeyConstraint:
+            baseTableName: applications
+            baseColumnNames: category_id
+            referencedTableName: service_categories
+            referencedColumnNames: id
+            constraintName: fk_application_category
+        - addForeignKeyConstraint:
+            baseTableName: applications
+            baseColumnNames: author_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_application_author
+        - addForeignKeyConstraint:
+            baseTableName: applications
+            baseColumnNames: assignee_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_application_assignee
