@@ -105,4 +105,5 @@ mvn spring-boot:run -Dspring-boot.run.profiles=pg
 - **FileEntity** — файл (имя, тип, размер, путь на диске, привязка к заявке и загрузившему)
 
 ## Схема БД
-<img width="1570" height="746" alt="image" src="https://github.com/user-attachments/assets/7ce04ac6-6b4b-4f35-a0d8-b02a6667d40f" />
+<img width="1039" height="520" alt="image" src="https://github.com/user-attachments/assets/741fa62d-2ad7-49b7-8f48-a774f52cfd23" />
+
